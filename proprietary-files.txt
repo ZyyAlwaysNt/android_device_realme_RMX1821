@@ -1106,7 +1106,8 @@ vendor/lib64/vendor.mediatek.hardware.pq@2.3.so
 -lib64/libem_audio_jni.so
 -lib64/libem_support_jni.so
 -lib64/vendor.mediatek.hardware.audio@5.1.so
--priv-app/EngineerMode/EngineerMode.apk
+# Pin patched activity exported engineer mode
+-priv-app/EngineerMode/EngineerMode.apk|9c90462d8caf098ce923bb947a58e49ca13be579
 vendor/app/EmCamera/lib/arm64/libem_camera_jni.so
 -vendor/app/EmCamera/EmCamera.apk
 vendor/app/SensorHub/lib/arm64/libem_sensor_jni.so
