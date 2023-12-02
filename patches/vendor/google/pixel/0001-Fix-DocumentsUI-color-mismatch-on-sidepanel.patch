@@ -1,0 +1,489 @@
+From cce8d5d1a8ed6f1fae3bcc8ec8f552c2e57ba4bb Mon Sep 17 00:00:00 2001
+From: Subhashis2007 <baradsubhashis@gmail.com>
+Date: Sat, 30 Sep 2023 02:25:00 +0000
+Subject: [PATCH] Fix DocumentsUI color mismatch on sidepanel
+
+---
+ .../color/dynamic_color_surface_2_light.xml    |  5 -----
+ .../res/drawable-ldrtl/root_list_selector.xml  | 12 +++++-------
+ .../res/drawable/ic_eject.xml                  |  7 +++----
+ .../res/drawable/ic_root_download.xml          |  7 +++----
+ .../res/drawable/ic_sd_storage.xml             |  7 +++----
+ .../res/drawable/root_list_selector.xml        | 12 +++++-------
+ .../res/values-night/colors.xml                |  8 ++++----
+ .../res/values-night/styles.xml                | 16 ----------------
+ .../res/values/bools.xml                       | 14 +++++++-------
+ .../res/values/colors.xml                      | 10 +++++-----
+ .../res/values/dimens.xml                      | 10 +++++-----
+ .../res/values/strings.xml                     | 16 +++++++++-------
+ .../res/values/styles.xml                      | 18 ------------------
+ .../color/dynamic_color_surface_2_light.xml    |  5 -----
+ .../res/drawable-ldrtl/root_list_selector.xml  | 12 +++++-------
+ .../res/drawable/ic_eject.xml                  |  7 +++----
+ .../res/drawable/ic_root_download.xml          |  7 +++----
+ .../res/drawable/ic_sd_storage.xml             |  7 +++----
+ .../res/drawable/root_list_selector.xml        | 12 +++++-------
+ .../res/values-night/colors.xml                |  8 ++++----
+ .../res/values-night/styles.xml                | 16 ----------------
+ .../res/values/bools.xml                       | 14 +++++++-------
+ .../res/values/colors.xml                      | 10 +++++-----
+ .../res/values/dimens.xml                      | 10 +++++-----
+ .../res/values/strings.xml                     | 16 +++++++++-------
+ .../res/values/styles.xml                      | 18 ------------------
+ 26 files changed, 98 insertions(+), 186 deletions(-)
+ delete mode 100644 overlay/PixelDocumentsUIGoogleOverlay/res/color/dynamic_color_surface_2_light.xml
+ delete mode 100644 overlay/PixelDocumentsUIGoogleOverlay/res/values-night/styles.xml
+ delete mode 100644 overlay/PixelDocumentsUIGoogleOverlay/res/values/styles.xml
+ delete mode 100644 overlay/PixelDocumentsUIOverlay/res/color/dynamic_color_surface_2_light.xml
+ delete mode 100644 overlay/PixelDocumentsUIOverlay/res/values-night/styles.xml
+ delete mode 100644 overlay/PixelDocumentsUIOverlay/res/values/styles.xml
+
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/color/dynamic_color_surface_2_light.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/color/dynamic_color_surface_2_light.xml
+deleted file mode 100644
+index e492670..0000000
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/color/dynamic_color_surface_2_light.xml
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<selector
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:color="@*android:color/background_floating_material_dark" android:alpha="0.08" />
+-</selector>
+\ No newline at end of file
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable-ldrtl/root_list_selector.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable-ldrtl/root_list_selector.xml
+index 664c3fe..0eecb01 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable-ldrtl/root_list_selector.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable-ldrtl/root_list_selector.xml
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<inset android:insetLeft="10.0dip"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <shape android:shape="rectangle"
+-      xmlns:android="http://schemas.android.com/apk/res/android">
+-        <corners android:topLeftRadius="48.0dip" android:topRightRadius="0.0dip" android:bottomLeftRadius="48.0dip" android:bottomRightRadius="0.0dip" />
+-        <solid android:color="?android:colorSecondary" />
++<inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetLeft="10dp">
++    <shape android:shape="rectangle">
++        <corners android:topLeftRadius="48dp" android:topRightRadius="0dp" android:bottomLeftRadius="48dp" android:bottomRightRadius="0dp"/>
++        <solid android:color="?android:attr/colorSecondary"/>
+     </shape>
+-</inset>
+\ No newline at end of file
++</inset>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_eject.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_eject.xml
+index 69fd712..81612c1 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_eject.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_eject.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M5,17h14v2L5,19zM12,5L5.33,15h13.34L12,5zM12,8.6l2.93,4.4L9.07,13L12,8.6z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M5,17h14v2L5,19zM12,5L5.33,15h13.34L12,5zM12,8.6l2.93,4.4L9.07,13L12,8.6z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_root_download.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_root_download.xml
+index 1e64c43..36403ce 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_root_download.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_root_download.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M19,12v7L5,19v-7L3,12v7c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2v-7h-2zM13,12.67l2.59,-2.58L17,11.5l-5,5 -5,-5 1.41,-1.41L11,12.67L11,3h2v9.67z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M19,12v7L5,19v-7L3,12v7c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2v-7h-2zM13,12.67l2.59,-2.58L17,11.5l-5,5 -5,-5 1.41,-1.41L11,12.67L11,3h2v9.67z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_sd_storage.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_sd_storage.xml
+index 83d563a..23a2639 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_sd_storage.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/ic_sd_storage.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M18,2h-8L4,8v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2L20,4c0,-1.1 -0.9,-2 -2,-2zM18,20L6,20L6,8.83L10.83,4L18,4v16zM9,7h2v4L9,11zM12,7h2v4h-2zM15,7h2v4h-2z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M18,2h-8L4,8v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2L20,4c0,-1.1 -0.9,-2 -2,-2zM18,20L6,20L6,8.83L10.83,4L18,4v16zM9,7h2v4L9,11zM12,7h2v4h-2zM15,7h2v4h-2z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/root_list_selector.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/root_list_selector.xml
+index eeee72e..a9de856 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/root_list_selector.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/drawable/root_list_selector.xml
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<inset android:insetRight="10.0dip"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <shape android:shape="rectangle"
+-      xmlns:android="http://schemas.android.com/apk/res/android">
+-        <corners android:topLeftRadius="0.0dip" android:topRightRadius="48.0dip" android:bottomLeftRadius="0.0dip" android:bottomRightRadius="48.0dip" />
+-        <solid android:color="?android:colorSecondary" />
++<inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetRight="10dp">
++    <shape android:shape="rectangle">
++        <corners android:topLeftRadius="0dp" android:topRightRadius="48dp" android:bottomLeftRadius="0dp" android:bottomRightRadius="48dp"/>
++        <solid android:color="?android:attr/colorSecondary"/>
+     </shape>
+-</inset>
+\ No newline at end of file
++</inset>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/colors.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/colors.xml
+index 542f9bf..e51023b 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/colors.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/colors.xml
+@@ -1,4 +1,4 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <color name="list_item_selected_background_color">@*android:color/background_holo_light</color>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="hairline">@*android:color/accent_material_dark</color>
++</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/styles.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/styles.xml
+deleted file mode 100644
+index d7c3dea..0000000
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values-night/styles.xml
++++ /dev/null
+@@ -1,16 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+-    <style name="DocumentsTheme" parent="@android:style/Theme.DeviceDefault.DocumentsUI">
+-        <item name="android:windowBackground">?android:colorBackground</item>
+-        <item name="android:windowNoTitle">true</item>
+-        <item name="android:windowSoftInputMode">adjustUnspecified|stateUnspecified</item>
+-        <item name="android:actionModeBackground">?android:colorBackground</item>
+-        <item name="android:actionBarSize">48.0dip</item>
+-        <item name="android:strokeColor">#ff5f6368</item>
+-        <item name="android:colorControlActivated">?android:colorForegroundInverse</item>
+-        <item name="android:statusBarColor">?android:colorBackground</item>
+-        <item name="android:windowLightStatusBar">false</item>
+-        <item name="android:colorSecondary">?androidprv:attr/colorPopupBackground</item>
+-        <item name="android:windowLightNavigationBar">false</item>
+-    </style>
+-</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values/bools.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values/bools.xml
+index 87bd7f9..a3f30f3 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values/bools.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/values/bools.xml
+@@ -1,7 +1,7 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <bool name="config_button_all_caps">false</bool>
+-    <bool name="handle_view_downloads_intent">false</bool>
+-    <bool name="is_launcher_enabled">false</bool>
+-    <bool name="show_search_bar">true</bool>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <bool name="config_button_all_caps">false</bool>
++    <bool name="handle_view_downloads_intent">false</bool>
++    <bool name="is_launcher_enabled">false</bool>
++    <bool name="show_search_bar">true</bool>
++</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values/colors.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values/colors.xml
+index 481eba3..ea24705 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values/colors.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/values/colors.xml
+@@ -1,5 +1,5 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <color name="list_item_selected_background_color">@color/dynamic_color_surface_2_light</color>
+-    <color name="primary">#ff1a73e8</color>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="hairline">@*android:color/accent_material_light</color>
++    <color name="primary">#1a73e8</color>
++</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values/dimens.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values/dimens.xml
+index 1bbbde5..f548483 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values/dimens.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/values/dimens.xml
+@@ -1,5 +1,5 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <dimen name="grid_item_radius">8.0dip</dimen>
+-    <dimen name="search_chip_radius">8.0dip</dimen>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <dimen name="grid_item_radius">8dp</dimen>
++    <dimen name="search_chip_radius">8dp</dimen>
++</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values/strings.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values/strings.xml
+index b6cc841..a6cbb9c 100644
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values/strings.xml
++++ b/overlay/PixelDocumentsUIGoogleOverlay/res/values/strings.xml
+@@ -1,7 +1,9 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <string name="config_fontFamily">@*android:string/config_bodyFontFamily</string>
+-    <string name="config_fontFamilyMedium">@*android:string/config_bodyFontFamilyMedium</string>
+-    <string name="preferred_root_package">com.google.android</string>
+-    <string name="trusted_quick_viewer_package">com.google.android.apps.docs</string>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="config_fontFamily">google-sans-text</string>
++    <string name="config_fontFamilyMedium">google-sans-text-medium</string>
++    <string name="config_headerFontFamily">google-sans</string>
++    <string name="config_headerFontFamilyMedium">google-sans-medium</string>
++    <string name="preferred_root_package">com.google.android</string>
++    <string name="trusted_quick_viewer_package">com.google.android.apps.docs</string>
++</resources>
+diff --git a/overlay/PixelDocumentsUIGoogleOverlay/res/values/styles.xml b/overlay/PixelDocumentsUIGoogleOverlay/res/values/styles.xml
+deleted file mode 100644
+index 5e82aca..0000000
+--- a/overlay/PixelDocumentsUIGoogleOverlay/res/values/styles.xml
++++ /dev/null
+@@ -1,18 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+-    <style name="DocumentsTheme" parent="@android:style/Theme.DeviceDefault.DocumentsUI">
+-        <item name="android:windowBackground">?android:colorBackground</item>
+-        <item name="android:windowNoTitle">true</item>
+-        <item name="android:windowSoftInputMode">adjustUnspecified|stateUnspecified</item>
+-        <item name="android:actionModeBackground">?android:colorBackground</item>
+-        <item name="android:actionBarSize">48.0dip</item>
+-        <item name="android:strokeColor">#ffdadce0</item>
+-        <item name="android:colorControlActivated">?android:colorForeground</item>
+-        <item name="android:statusBarColor">?android:colorBackground</item>
+-        <item name="android:navigationBarColor">?android:colorBackground</item>
+-        <item name="android:windowLightStatusBar">true</item>
+-        <item name="android:colorSecondary">?androidprv:attr/colorPopupBackground</item>
+-        <item name="android:windowLightNavigationBar">true</item>
+-        <item name="android:navigationBarDividerColor">?android:strokeColor</item>
+-    </style>
+-</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/color/dynamic_color_surface_2_light.xml b/overlay/PixelDocumentsUIOverlay/res/color/dynamic_color_surface_2_light.xml
+deleted file mode 100644
+index e492670..0000000
+--- a/overlay/PixelDocumentsUIOverlay/res/color/dynamic_color_surface_2_light.xml
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<selector
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:color="@*android:color/background_floating_material_dark" android:alpha="0.08" />
+-</selector>
+\ No newline at end of file
+diff --git a/overlay/PixelDocumentsUIOverlay/res/drawable-ldrtl/root_list_selector.xml b/overlay/PixelDocumentsUIOverlay/res/drawable-ldrtl/root_list_selector.xml
+index 664c3fe..0eecb01 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/drawable-ldrtl/root_list_selector.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/drawable-ldrtl/root_list_selector.xml
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<inset android:insetLeft="10.0dip"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <shape android:shape="rectangle"
+-      xmlns:android="http://schemas.android.com/apk/res/android">
+-        <corners android:topLeftRadius="48.0dip" android:topRightRadius="0.0dip" android:bottomLeftRadius="48.0dip" android:bottomRightRadius="0.0dip" />
+-        <solid android:color="?android:colorSecondary" />
++<inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetLeft="10dp">
++    <shape android:shape="rectangle">
++        <corners android:topLeftRadius="48dp" android:topRightRadius="0dp" android:bottomLeftRadius="48dp" android:bottomRightRadius="0dp"/>
++        <solid android:color="?android:attr/colorSecondary"/>
+     </shape>
+-</inset>
+\ No newline at end of file
++</inset>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_eject.xml b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_eject.xml
+index 69fd712..81612c1 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_eject.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_eject.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M5,17h14v2L5,19zM12,5L5.33,15h13.34L12,5zM12,8.6l2.93,4.4L9.07,13L12,8.6z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M5,17h14v2L5,19zM12,5L5.33,15h13.34L12,5zM12,8.6l2.93,4.4L9.07,13L12,8.6z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_root_download.xml b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_root_download.xml
+index 1e64c43..36403ce 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_root_download.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_root_download.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M19,12v7L5,19v-7L3,12v7c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2v-7h-2zM13,12.67l2.59,-2.58L17,11.5l-5,5 -5,-5 1.41,-1.41L11,12.67L11,3h2v9.67z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M19,12v7L5,19v-7L3,12v7c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2v-7h-2zM13,12.67l2.59,-2.58L17,11.5l-5,5 -5,-5 1.41,-1.41L11,12.67L11,3h2v9.67z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_sd_storage.xml b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_sd_storage.xml
+index 83d563a..23a2639 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/drawable/ic_sd_storage.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/drawable/ic_sd_storage.xml
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<vector android:height="24.0dip" android:width="24.0dip" android:viewportWidth="24.0" android:viewportHeight="24.0"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <path android:fillColor="#ff5f6368" android:pathData="M18,2h-8L4,8v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2L20,4c0,-1.1 -0.9,-2 -2,-2zM18,20L6,20L6,8.83L10.83,4L18,4v16zM9,7h2v4L9,11zM12,7h2v4h-2zM15,7h2v4h-2z" />
+-</vector>
+\ No newline at end of file
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:width="24dp" android:viewportWidth="24" android:viewportHeight="24">
++    <path android:fillColor="#5f6368" android:pathData="M18,2h-8L4,8v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2L20,4c0,-1.1 -0.9,-2 -2,-2zM18,20L6,20L6,8.83L10.83,4L18,4v16zM9,7h2v4L9,11zM12,7h2v4h-2zM15,7h2v4h-2z"/>
++</vector>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/drawable/root_list_selector.xml b/overlay/PixelDocumentsUIOverlay/res/drawable/root_list_selector.xml
+index eeee72e..a9de856 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/drawable/root_list_selector.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/drawable/root_list_selector.xml
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<inset android:insetRight="10.0dip"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <shape android:shape="rectangle"
+-      xmlns:android="http://schemas.android.com/apk/res/android">
+-        <corners android:topLeftRadius="0.0dip" android:topRightRadius="48.0dip" android:bottomLeftRadius="0.0dip" android:bottomRightRadius="48.0dip" />
+-        <solid android:color="?android:colorSecondary" />
++<inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetRight="10dp">
++    <shape android:shape="rectangle">
++        <corners android:topLeftRadius="0dp" android:topRightRadius="48dp" android:bottomLeftRadius="0dp" android:bottomRightRadius="48dp"/>
++        <solid android:color="?android:attr/colorSecondary"/>
+     </shape>
+-</inset>
+\ No newline at end of file
++</inset>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values-night/colors.xml b/overlay/PixelDocumentsUIOverlay/res/values-night/colors.xml
+index 542f9bf..e51023b 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/values-night/colors.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/values-night/colors.xml
+@@ -1,4 +1,4 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <color name="list_item_selected_background_color">@*android:color/background_holo_light</color>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="hairline">@*android:color/accent_material_dark</color>
++</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values-night/styles.xml b/overlay/PixelDocumentsUIOverlay/res/values-night/styles.xml
+deleted file mode 100644
+index d7c3dea..0000000
+--- a/overlay/PixelDocumentsUIOverlay/res/values-night/styles.xml
++++ /dev/null
+@@ -1,16 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+-    <style name="DocumentsTheme" parent="@android:style/Theme.DeviceDefault.DocumentsUI">
+-        <item name="android:windowBackground">?android:colorBackground</item>
+-        <item name="android:windowNoTitle">true</item>
+-        <item name="android:windowSoftInputMode">adjustUnspecified|stateUnspecified</item>
+-        <item name="android:actionModeBackground">?android:colorBackground</item>
+-        <item name="android:actionBarSize">48.0dip</item>
+-        <item name="android:strokeColor">#ff5f6368</item>
+-        <item name="android:colorControlActivated">?android:colorForegroundInverse</item>
+-        <item name="android:statusBarColor">?android:colorBackground</item>
+-        <item name="android:windowLightStatusBar">false</item>
+-        <item name="android:colorSecondary">?androidprv:attr/colorPopupBackground</item>
+-        <item name="android:windowLightNavigationBar">false</item>
+-    </style>
+-</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values/bools.xml b/overlay/PixelDocumentsUIOverlay/res/values/bools.xml
+index 87bd7f9..a3f30f3 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/values/bools.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/values/bools.xml
+@@ -1,7 +1,7 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <bool name="config_button_all_caps">false</bool>
+-    <bool name="handle_view_downloads_intent">false</bool>
+-    <bool name="is_launcher_enabled">false</bool>
+-    <bool name="show_search_bar">true</bool>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <bool name="config_button_all_caps">false</bool>
++    <bool name="handle_view_downloads_intent">false</bool>
++    <bool name="is_launcher_enabled">false</bool>
++    <bool name="show_search_bar">true</bool>
++</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values/colors.xml b/overlay/PixelDocumentsUIOverlay/res/values/colors.xml
+index 481eba3..ea24705 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/values/colors.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/values/colors.xml
+@@ -1,5 +1,5 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <color name="list_item_selected_background_color">@color/dynamic_color_surface_2_light</color>
+-    <color name="primary">#ff1a73e8</color>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="hairline">@*android:color/accent_material_light</color>
++    <color name="primary">#1a73e8</color>
++</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values/dimens.xml b/overlay/PixelDocumentsUIOverlay/res/values/dimens.xml
+index 1bbbde5..f548483 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/values/dimens.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/values/dimens.xml
+@@ -1,5 +1,5 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <dimen name="grid_item_radius">8.0dip</dimen>
+-    <dimen name="search_chip_radius">8.0dip</dimen>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <dimen name="grid_item_radius">8dp</dimen>
++    <dimen name="search_chip_radius">8dp</dimen>
++</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values/strings.xml b/overlay/PixelDocumentsUIOverlay/res/values/strings.xml
+index b6cc841..a6cbb9c 100644
+--- a/overlay/PixelDocumentsUIOverlay/res/values/strings.xml
++++ b/overlay/PixelDocumentsUIOverlay/res/values/strings.xml
+@@ -1,7 +1,9 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources>
+-    <string name="config_fontFamily">@*android:string/config_bodyFontFamily</string>
+-    <string name="config_fontFamilyMedium">@*android:string/config_bodyFontFamilyMedium</string>
+-    <string name="preferred_root_package">com.google.android</string>
+-    <string name="trusted_quick_viewer_package">com.google.android.apps.docs</string>
+-</resources>
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="config_fontFamily">google-sans-text</string>
++    <string name="config_fontFamilyMedium">google-sans-text-medium</string>
++    <string name="config_headerFontFamily">google-sans</string>
++    <string name="config_headerFontFamilyMedium">google-sans-medium</string>
++    <string name="preferred_root_package">com.google.android</string>
++    <string name="trusted_quick_viewer_package">com.google.android.apps.docs</string>
++</resources>
+diff --git a/overlay/PixelDocumentsUIOverlay/res/values/styles.xml b/overlay/PixelDocumentsUIOverlay/res/values/styles.xml
+deleted file mode 100644
+index 5e82aca..0000000
+--- a/overlay/PixelDocumentsUIOverlay/res/values/styles.xml
++++ /dev/null
+@@ -1,18 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+-    <style name="DocumentsTheme" parent="@android:style/Theme.DeviceDefault.DocumentsUI">
+-        <item name="android:windowBackground">?android:colorBackground</item>
+-        <item name="android:windowNoTitle">true</item>
+-        <item name="android:windowSoftInputMode">adjustUnspecified|stateUnspecified</item>
+-        <item name="android:actionModeBackground">?android:colorBackground</item>
+-        <item name="android:actionBarSize">48.0dip</item>
+-        <item name="android:strokeColor">#ffdadce0</item>
+-        <item name="android:colorControlActivated">?android:colorForeground</item>
+-        <item name="android:statusBarColor">?android:colorBackground</item>
+-        <item name="android:navigationBarColor">?android:colorBackground</item>
+-        <item name="android:windowLightStatusBar">true</item>
+-        <item name="android:colorSecondary">?androidprv:attr/colorPopupBackground</item>
+-        <item name="android:windowLightNavigationBar">true</item>
+-        <item name="android:navigationBarDividerColor">?android:strokeColor</item>
+-    </style>
+-</resources>
+-- 
+2.34.1
+

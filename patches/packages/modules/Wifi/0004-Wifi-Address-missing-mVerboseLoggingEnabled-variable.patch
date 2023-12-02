@@ -1,0 +1,27 @@
+From 1e3ac71f64b2b2b02ff22ab67634b4afe04c3ccc Mon Sep 17 00:00:00 2001
+From: Sarthak Roy <sarthakroy2002@gmail.com>
+Date: Sun, 10 Oct 2021 17:03:42 +0000
+Subject: [PATCH 4/4] Wifi: Address missing mVerboseLoggingEnabled variable
+
+* Required for MTK-IMS
+
+Change-Id: I748cf15a15e4feaebb1976514e2b3ffd3f5f1b8c
+---
+ service/java/com/android/server/wifi/WifiServiceImpl.java | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/service/java/com/android/server/wifi/WifiServiceImpl.java b/service/java/com/android/server/wifi/WifiServiceImpl.java
+index b0581dfdb3..99281b9a0f 100644
+--- a/service/java/com/android/server/wifi/WifiServiceImpl.java
++++ b/service/java/com/android/server/wifi/WifiServiceImpl.java
+@@ -276,6 +276,7 @@ public class WifiServiceImpl extends BaseWifiService {
+     private final MultiInternetManager mMultiInternetManager;
+     private int mVerboseAlwaysOnLevel = -1;
+     private boolean mIsWifiServiceStarted = false;
++    private boolean mVerboseLoggingEnabled = false;
+ 
+     /**
+      * Callback for use with LocalOnlyHotspot to unregister requesting applications upon death.
+-- 
+2.39.1
+

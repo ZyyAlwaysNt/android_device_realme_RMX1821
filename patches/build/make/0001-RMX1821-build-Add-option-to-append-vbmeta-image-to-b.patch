@@ -1,0 +1,353 @@
+From 81ccad02a35a165fb12cc2a356a8fbb34b96443d Mon Sep 17 00:00:00 2001
+From: Maanush Putcha <p.maanush@gmail.com>
+Date: Tue, 17 Jan 2023 19:01:52 +0530
+Subject: [PATCH] RMX1821: build: Add option to append vbmeta image to boot
+ image
+
+* Partially taken from : https://github.com/mtk-watch/android_build_make/commit/89d279a7ab1d0249f89c84d53fd4dbd786d19727
+
+* Set MAIN_VBMETA_IN_BOOT=yes for the vbmeta to get appended to boot image
+
+Co-authored-by: Arrowsploit <arrowsploit@pm.me>
+Change-Id: I04c0843c4f94b1091e0136bc846965ca390a9e66
+---
+ core/Makefile                                 | 83 +++++++++++++++++++
+ core/main.mk                                  | 76 +++++++++++++++++
+ tools/releasetools/add_img_to_target_files.py | 29 +++++++
+ tools/releasetools/common.py                  | 15 +++-
+ 4 files changed, 202 insertions(+), 1 deletion(-)
+
+diff --git a/core/Makefile b/core/Makefile
+index c19b0754af..fa1ff00329 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -930,10 +930,22 @@ endif # BUILDING_RAMDISK_IMAGE
+ # This is defined here since we may be building recovery as boot
+ # below and only want to define this once
+ ifneq ($(strip $(BOARD_KERNEL_BINARIES)),)
++ifeq (yes,$(MAIN_VBMETA_IN_BOOT))
++  BUILT_BOOTIMAGE_TARGET := $(foreach k,$(subst kernel,boot,$(BOARD_KERNEL_BINARIES)), $(call intermediates-dir-for,PACKAGING,boot)/$(k).img)
++  MTK_BOOTIMAGE_TARGET := $(foreach k,$(subst kernel,boot,$(BOARD_KERNEL_BINARIES)), $(PRODUCT_OUT)/$(k).img)
++else
+   BUILT_BOOTIMAGE_TARGET := $(foreach k,$(subst kernel,boot,$(BOARD_KERNEL_BINARIES)), $(PRODUCT_OUT)/$(k).img)
++endif
++
++else
++
++ifeq (yes,$(MAIN_VBMETA_IN_BOOT))
++  BUILT_BOOTIMAGE_TARGET := $(call intermediates-dir-for,PACKAGING,boot)/boot.img
++  MTK_BOOTIMAGE_TARGET := $(PRODUCT_OUT)/boot.img
+ else
+   BUILT_BOOTIMAGE_TARGET := $(PRODUCT_OUT)/boot.img
+ endif
++endif
+ 
+ INTERNAL_PREBUILT_BOOTIMAGE :=
+ 
+@@ -1234,7 +1246,12 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INTERNAL_PREBUILT_BOOTIMAGE)
+ endif # BOARD_AVB_ENABLE
+ 
+ else # BOARD_PREBUILT_BOOTIMAGE not defined
++ifeq (yes,$(MAIN_VBMETA_IN_BOOT))
++INSTALLED_BOOTIMAGE_TARGET :=
++MTK_BOOTIMAGE_TARGET :=
++else
+ INSTALLED_BOOTIMAGE_TARGET :=
++endif
+ endif # BOARD_PREBUILT_BOOTIMAGE
+ endif # TARGET_NO_KERNEL
+ endif # my_installed_prebuilt_gki_apex not defined
+@@ -4650,6 +4667,23 @@ endif # BUILDING_VBMETA_IMAGE
+ 
+ endif # BOARD_AVB_ENABLE
+ 
++ifneq ($(strip $(TARGET_NO_KERNEL)),true)
++ifeq (yes, $(strip $(MAIN_VBMETA_IN_BOOT)))
++
++ifeq (true, $(strip $(BOARD_AVB_ENABLE)))
++$(MTK_BOOTIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET) $(BUILT_VBMETAIMAGE_TARGET) $(AVBTOOL)
++	@echo "Install boot image: $@"
++	$(copy-file-to-target)
++	$(hide) $(AVBTOOL) append_vbmeta_image --image $@ --partition_size $(BOARD_BOOTIMAGE_PARTITION_SIZE) --vbmeta_image $(BUILT_VBMETAIMAGE_TARGET)
++endif
++
++else
++$(MTK_BOOTIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET)
++	@echo "Install boot image: $@"
++	$(copy-file-to-target)
++endif # MAIN_VBMETA_IN_BOOT
++endif # TARGET_NO_KERNEL
++
+ # List of files from all images
+ INTERNAL_ALLIMAGES_FILES := \
+     $(FULL_SYSTEMIMAGE_DEPS) \
+@@ -5337,6 +5371,9 @@ ifneq (,$(strip $(BOARD_CUSTOMIMAGES_PARTITION_LIST)))
+ 	    echo "avb_$(partition)_partition_size=$(BOARD_AVB_$(call to-upper,$(partition))_PARTITION_SIZE)"  >> $@; \
+ 	    echo "avb_$(partition)_image_list=$(foreach image,$(BOARD_AVB_$(call to-upper,$(partition))_IMAGE_LIST),$(notdir $(image)))" >> $@;)
+ endif # BOARD_CUSTOMIMAGES_PARTITION_LIST
++ifeq (yes, $(strip $(MAIN_VBMETA_IN_BOOT)))
++	$(hide) echo "avb_main_vbmeta_in_boot=true" >> $@
++endif # MAIN_VBMETA_IN_BOOT
+ ifneq (,$(strip $(BOARD_AVB_VBMETA_SYSTEM)))
+ 	$(hide) echo "avb_vbmeta_system=$(BOARD_AVB_VBMETA_SYSTEM)" >> $@
+ 	$(hide) echo "avb_vbmeta_system_args=$(BOARD_AVB_MAKE_VBMETA_SYSTEM_IMAGE_ARGS)" >> $@
+@@ -5722,6 +5759,7 @@ endif
+ 
+ # Depending on the various images guarantees that the underlying
+ # directories are up-to-date.
++ifeq (yes,$(MAIN_VBMETA_IN_BOOT))
+ $(BUILT_TARGET_FILES_PACKAGE): \
+ 	    $(INSTALLED_RADIOIMAGE_TARGET) \
+ 	    $(INSTALLED_RECOVERYIMAGE_TARGET) \
+@@ -5734,6 +5772,7 @@ $(BUILT_TARGET_FILES_PACKAGE): \
+ 	    $(INSTALLED_RECOVERY_KERNEL_TARGET) \
+ 	    $(INSTALLED_KERNEL_TARGET) \
+ 	    $(INSTALLED_RAMDISK_TARGET) \
++	    $(MTK_BOOTIMAGE_TARGET) \
+ 	    $(INSTALLED_DTBIMAGE_TARGET) \
+ 	    $(INSTALLED_2NDBOOTLOADER_TARGET) \
+ 	    $(BOARD_PREBUILT_DTBOIMAGE) \
+@@ -5759,6 +5798,45 @@ $(BUILT_TARGET_FILES_PACKAGE): \
+ 	    $(BUILT_KERNEL_CONFIGS_FILE) \
+ 	    $(BUILT_KERNEL_VERSION_FILE) \
+ 	    | $(ACP)
++else
++$(BUILT_TARGET_FILES_PACKAGE): \
++	    $(INSTALLED_RADIOIMAGE_TARGET) \
++	    $(INSTALLED_RECOVERYIMAGE_TARGET) \
++	    $(INSTALLED_CACHEIMAGE_TARGET) \
++	    $(INSTALLED_DTBOIMAGE_TARGET) \
++	    $(INSTALLED_PVMFWIMAGE_TARGET) \
++	    $(INSTALLED_PVMFW_EMBEDDED_AVBKEY_TARGET) \
++	    $(INSTALLED_CUSTOMIMAGES_TARGET) \
++	    $(INSTALLED_ANDROID_INFO_TXT_TARGET) \
++	    $(INSTALLED_RECOVERY_KERNEL_TARGET) \
++	    $(INSTALLED_KERNEL_TARGET) \
++	    $(INSTALLED_RAMDISK_TARGET) \
++	    $(INSTALLED_DTBIMAGE_TARGET) \
++	    $(INSTALLED_2NDBOOTLOADER_TARGET) \
++	    $(BOARD_PREBUILT_DTBOIMAGE) \
++	    $(BOARD_PREBUILT_RECOVERY_DTBOIMAGE) \
++	    $(BOARD_RECOVERY_ACPIO) \
++	    $(PRODUCT_SYSTEM_BASE_FS_PATH) \
++	    $(PRODUCT_VENDOR_BASE_FS_PATH) \
++	    $(PRODUCT_PRODUCT_BASE_FS_PATH) \
++	    $(PRODUCT_SYSTEM_EXT_BASE_FS_PATH) \
++	    $(PRODUCT_ODM_BASE_FS_PATH) \
++	    $(PRODUCT_VENDOR_DLKM_BASE_FS_PATH) \
++	    $(PRODUCT_ODM_DLKM_BASE_FS_PATH) \
++	    $(PRODUCT_SYSTEM_DLKM_BASE_FS_PATH) \
++	    $(LPMAKE) \
++	    $(SELINUX_FC) \
++	    $(INSTALLED_MISC_INFO_TARGET) \
++	    $(APKCERTS_FILE) \
++	    $(SOONG_APEX_KEYS_FILE) \
++	    $(SOONG_ZIP) \
++	    $(HOST_OUT_EXECUTABLES)/fs_config \
++	    $(ADD_IMG_TO_TARGET_FILES) \
++	    $(MAKE_RECOVERY_PATCH) \
++	    $(BUILT_KERNEL_CONFIGS_FILE) \
++	    $(BUILT_KERNEL_VERSION_FILE) \
++	    | $(ACP)
++endif
+ 	@echo "Package target files: $@"
+ 	$(hide) rm -rf $@ $@.list $(zip_root)
+ 	$(hide) mkdir -p $(dir $@) $(zip_root)
+@@ -6176,6 +6254,11 @@ endif
+ ifeq ($(BUILD_QEMU_IMAGES),true)
+ 	$(hide) AVBTOOL=$(AVBTOOL) $(MK_VBMETA_BOOT_KERNEL_CMDLINE_SH) $(zip_root)/IMAGES/vbmeta.img \
+ 	    $(zip_root)/IMAGES/system.img $(zip_root)/IMAGES/VerifiedBootParams.textproto
++endif
++ifeq (yes, $(strip $(MAIN_VBMETA_IN_BOOT)))
++ifeq (true, $(strip $(BOARD_AVB_ENABLE)))
++	$(hide) $(AVBTOOL) append_vbmeta_image --image $(zip_root)/IMAGES/boot.img --partition_size $(BOARD_BOOTIMAGE_PARTITION_SIZE) --vbmeta_image $(zip_root)/IMAGES/vbmeta.img
++endif
+ endif
+ 	@# Zip everything up, preserving symlinks and placing META/ files first to
+ 	@# help early validation of the .zip file while uploading it.
+diff --git a/core/main.mk b/core/main.mk
+index 702791ebb7..1c20dd84a7 100644
+--- a/core/main.mk
++++ b/core/main.mk
+@@ -1576,8 +1576,13 @@ systemotherimage: $(INSTALLED_SYSTEMOTHERIMAGE_TARGET)
+ .PHONY: superimage_empty
+ superimage_empty: $(INSTALLED_SUPERIMAGE_EMPTY_TARGET)
+ 
++ifneq ($(MAIN_VBMETA_IN_BOOT),yes)
++.PHONY: bootimage
++bootimage: $(MTK_BOOTIMAGE_TARGET)
++else
+ .PHONY: bootimage
+ bootimage: $(INSTALLED_BOOTIMAGE_TARGET)
++endif
+ 
+ .PHONY: initbootimage
+ initbootimage: $(INSTALLED_INIT_BOOT_IMAGE_TARGET)
+@@ -1603,6 +1608,76 @@ vbmetavendorimage: $(INSTALLED_VBMETA_VENDORIMAGE_TARGET)
+ 
+ # The droidcore-unbundled target depends on the subset of targets necessary to
+ # perform a full system build (either unbundled or not).
++ifneq ($(MAIN_VBMETA_IN_BOOT),yes)
++.PHONY: droidcore-unbundled
++droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
++    $(INSTALLED_FILES_OUTSIDE_IMAGES) \
++    $(INSTALLED_SYSTEMIMAGE_TARGET) \
++    $(INSTALLED_RAMDISK_TARGET) \
++    $(MTK_BOOTIMAGE_TARGET) \
++    $(INSTALLED_INIT_BOOT_IMAGE_TARGET) \
++    $(INSTALLED_RADIOIMAGE_TARGET) \
++    $(INSTALLED_DEBUG_RAMDISK_TARGET) \
++    $(INSTALLED_DEBUG_BOOTIMAGE_TARGET) \
++    $(INSTALLED_RECOVERYIMAGE_TARGET) \
++    $(INSTALLED_VBMETAIMAGE_TARGET) \
++    $(INSTALLED_VBMETA_SYSTEMIMAGE_TARGET) \
++    $(INSTALLED_VBMETA_VENDORIMAGE_TARGET) \
++    $(INSTALLED_USERDATAIMAGE_TARGET) \
++    $(INSTALLED_CACHEIMAGE_TARGET) \
++    $(INSTALLED_BPTIMAGE_TARGET) \
++    $(INSTALLED_VENDORIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_BOOTIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_KERNEL_BOOTIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_DEBUG_BOOTIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_TEST_HARNESS_RAMDISK_TARGET) \
++    $(INSTALLED_VENDOR_TEST_HARNESS_BOOTIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_RAMDISK_TARGET) \
++    $(INSTALLED_VENDOR_KERNEL_RAMDISK_TARGET) \
++    $(INSTALLED_VENDOR_DEBUG_RAMDISK_TARGET) \
++    $(INSTALLED_ODMIMAGE_TARGET) \
++    $(INSTALLED_VENDOR_DLKMIMAGE_TARGET) \
++    $(INSTALLED_ODM_DLKMIMAGE_TARGET) \
++    $(INSTALLED_SYSTEM_DLKMIMAGE_TARGET) \
++    $(INSTALLED_SUPERIMAGE_EMPTY_TARGET) \
++    $(INSTALLED_PRODUCTIMAGE_TARGET) \
++    $(INSTALLED_SYSTEMOTHERIMAGE_TARGET) \
++    $(INSTALLED_TEST_HARNESS_RAMDISK_TARGET) \
++    $(INSTALLED_TEST_HARNESS_BOOTIMAGE_TARGET) \
++    $(INSTALLED_FILES_FILE) \
++    $(INSTALLED_FILES_JSON) \
++    $(INSTALLED_FILES_FILE_VENDOR) \
++    $(INSTALLED_FILES_JSON_VENDOR) \
++    $(INSTALLED_FILES_FILE_ODM) \
++    $(INSTALLED_FILES_JSON_ODM) \
++    $(INSTALLED_FILES_FILE_VENDOR_DLKM) \
++    $(INSTALLED_FILES_JSON_VENDOR_DLKM) \
++    $(INSTALLED_FILES_FILE_ODM_DLKM) \
++    $(INSTALLED_FILES_JSON_ODM_DLKM) \
++    $(INSTALLED_FILES_FILE_SYSTEM_DLKM) \
++    $(INSTALLED_FILES_JSON_SYSTEM_DLKM) \
++    $(INSTALLED_FILES_FILE_PRODUCT) \
++    $(INSTALLED_FILES_JSON_PRODUCT) \
++    $(INSTALLED_FILES_FILE_SYSTEM_EXT) \
++    $(INSTALLED_FILES_JSON_SYSTEM_EXT) \
++    $(INSTALLED_FILES_FILE_SYSTEMOTHER) \
++    $(INSTALLED_FILES_JSON_SYSTEMOTHER) \
++    $(INSTALLED_FILES_FILE_RAMDISK) \
++    $(INSTALLED_FILES_JSON_RAMDISK) \
++    $(INSTALLED_FILES_FILE_DEBUG_RAMDISK) \
++    $(INSTALLED_FILES_JSON_DEBUG_RAMDISK) \
++    $(INSTALLED_FILES_FILE_VENDOR_RAMDISK) \
++    $(INSTALLED_FILES_JSON_VENDOR_RAMDISK) \
++    $(INSTALLED_FILES_FILE_VENDOR_DEBUG_RAMDISK) \
++    $(INSTALLED_FILES_JSON_VENDOR_DEBUG_RAMDISK) \
++    $(INSTALLED_FILES_FILE_VENDOR_KERNEL_RAMDISK) \
++    $(INSTALLED_FILES_JSON_VENDOR_KERNEL_RAMDISK) \
++    $(INSTALLED_FILES_FILE_ROOT) \
++    $(INSTALLED_FILES_JSON_ROOT) \
++    $(INSTALLED_FILES_FILE_RECOVERY) \
++    $(INSTALLED_FILES_JSON_RECOVERY) \
++    $(INSTALLED_ANDROID_INFO_TXT_TARGET)
++else
+ .PHONY: droidcore-unbundled
+ droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
+     $(INSTALLED_FILES_OUTSIDE_IMAGES) \
+@@ -1671,6 +1746,7 @@ droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
+     $(INSTALLED_FILES_FILE_RECOVERY) \
+     $(INSTALLED_FILES_JSON_RECOVERY) \
+     $(INSTALLED_ANDROID_INFO_TXT_TARGET)
++endif
+ 
+ # The droidcore target depends on the droidcore-unbundled subset and any other
+ # targets for a non-unbundled (full source) full system build.
+diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/add_img_to_target_files.py
+index 09f69d0400..8c12e2a9b0 100644
+--- a/tools/releasetools/add_img_to_target_files.py
++++ b/tools/releasetools/add_img_to_target_files.py
+@@ -508,6 +508,31 @@ def AddUserdata(output_zip):
+   # As it's likely huge and consist of lots of 0s.
+   img.Write(zipfile.ZIP_DEFLATED)
+ 
++def AVBSignBoot(output_zip):
++  """Sign the boot image by avbtool.
++  Skip sign the boot image in GetBootableImage for generate recovery
++  patch if main_vbmeta_in_boot is enabled. Sign boot image which is
++  under IMAGES/ and is generated by GetBootableImage.
++  """
++  img = OutputFile(output_zip, OPTIONS.input_tmp, "IMAGES", "boot.img")
++  if os.path.exists(img.name):
++  # AVB-sign the image as needed.
++    avbtool = os.getenv('AVBTOOL') or OPTIONS.info_dict["avb_avbtool"]
++    part_size = OPTIONS.info_dict["boot_size"]
++    # The AVB hash footer will be replaced if already present.
++    cmd = [avbtool, "add_hash_footer", "--image", img.name,
++           "--partition_size", str(part_size), "--partition_name", "boot"]
++    common.AppendAVBSigningArgs(cmd, "boot")
++    args = OPTIONS.info_dict.get("avb_boot_add_hash_footer_args")
++    if args and args.strip():
++      cmd.extend(shlex.split(args))
++    common.RunAndCheckOutput(cmd)
++  else:
++    assert os.path.exists(img.input_name), 'Failed to find boot.img in %s' % (
++        img.input_name)
++
++  img.Write()
++  return img.name
+ 
+ def AddVBMeta(output_zip, partitions, name, needed_partitions):
+   """Creates a VBMeta image and stores it in output_zip.
+@@ -952,6 +977,10 @@ def AddImagesToTargetFiles(filename):
+     banner("custom images for " + partition_name)
+     partitions[partition_name] = AddCustomImages(output_zip, partition_name)
+ 
++  if OPTIONS.info_dict.get("avb_main_vbmeta_in_boot") == "true":
++    banner("main_vbmeta_in_boot")
++    partitions['boot'] = AVBSignBoot(output_zip)
++
+   if OPTIONS.info_dict.get("avb_enable") == "true":
+     # vbmeta_partitions includes the partitions that should be included into
+     # top-level vbmeta.img, which are the ones that are not included in any
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index af66122f5f..9d6ab6622c 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1724,7 +1724,7 @@ def _BuildBootableImage(image_name, sourcedir, fs_config_file, info_dict=None,
+     img_keyblock.close()
+ 
+   # AVB: if enabled, calculate and add hash to boot.img or recovery.img.
+-  if info_dict.get("avb_enable") == "true":
++  if info_dict.get("avb_enable") == "true" and info_dict.get("avb_main_vbmeta_in_boot") != "true":
+     avbtool = info_dict["avb_avbtool"]
+     if partition_name == "recovery":
+       part_size = info_dict["recovery_size"]
+@@ -1739,6 +1739,19 @@ def _BuildBootableImage(image_name, sourcedir, fs_config_file, info_dict=None,
+       cmd.extend(shlex.split(args))
+     RunAndCheckOutput(cmd)
+ 
++  # AVB: if vbmeta needs to be appended to boot, only add hash to recovery.img
++  if info_dict.get("avb_enable") == "true" and info_dict.get("avb_main_vbmeta_in_boot") == "true":
++    avbtool = info_dict["avb_avbtool"]
++    part_size = info_dict["recovery_size"]
++    cmd = [avbtool, "add_hash_footer", "--image", img.name,
++           "--partition_size", str(part_size), "--partition_name",
++           "recovery"]
++    AppendAVBSigningArgs(cmd, "recovery")
++    args = info_dict.get("avb_recovery_add_hash_footer_args")
++    if args and args.strip():
++      cmd.extend(shlex.split(args))
++    RunAndCheckOutput(cmd)
++
+   img.seek(os.SEEK_SET, 0)
+   data = img.read()
+ 
+-- 
+2.39.1
+
