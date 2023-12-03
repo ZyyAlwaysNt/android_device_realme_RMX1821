@@ -21,7 +21,7 @@ diff --git a/core/Makefile b/core/Makefile
 index c19b0754af..fa1ff00329 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -930,10 +930,22 @@ endif # BUILDING_RAMDISK_IMAGE
+@@ -919,10 +919,22 @@ endif # BUILDING_RAMDISK_IMAGE
  # This is defined here since we may be building recovery as boot
  # below and only want to define this once
  ifneq ($(strip $(BOARD_KERNEL_BINARIES)),)
@@ -44,7 +44,7 @@ index c19b0754af..fa1ff00329 100644
  
  INTERNAL_PREBUILT_BOOTIMAGE :=
  
-@@ -1234,7 +1246,12 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INTERNAL_PREBUILT_BOOTIMAGE)
+@@ -1223,7 +1235,12 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INTERNAL_PREBUILT_BOOTIMAGE)
  endif # BOARD_AVB_ENABLE
  
  else # BOARD_PREBUILT_BOOTIMAGE not defined
@@ -57,7 +57,7 @@ index c19b0754af..fa1ff00329 100644
  endif # BOARD_PREBUILT_BOOTIMAGE
  endif # TARGET_NO_KERNEL
  endif # my_installed_prebuilt_gki_apex not defined
-@@ -4650,6 +4667,23 @@ endif # BUILDING_VBMETA_IMAGE
+@@ -4622,6 +4656,23 @@ endif # BUILDING_VBMETA_IMAGE
  
  endif # BOARD_AVB_ENABLE
  
@@ -81,7 +81,7 @@ index c19b0754af..fa1ff00329 100644
  # List of files from all images
  INTERNAL_ALLIMAGES_FILES := \
      $(FULL_SYSTEMIMAGE_DEPS) \
-@@ -5337,6 +5371,9 @@ ifneq (,$(strip $(BOARD_CUSTOMIMAGES_PARTITION_LIST)))
+@@ -5307,6 +5341,9 @@ ifneq (,$(strip $(BOARD_CUSTOMIMAGES_PARTITION_LIST)))
  	    echo "avb_$(partition)_partition_size=$(BOARD_AVB_$(call to-upper,$(partition))_PARTITION_SIZE)"  >> $@; \
  	    echo "avb_$(partition)_image_list=$(foreach image,$(BOARD_AVB_$(call to-upper,$(partition))_IMAGE_LIST),$(notdir $(image)))" >> $@;)
  endif # BOARD_CUSTOMIMAGES_PARTITION_LIST
@@ -91,7 +91,7 @@ index c19b0754af..fa1ff00329 100644
  ifneq (,$(strip $(BOARD_AVB_VBMETA_SYSTEM)))
  	$(hide) echo "avb_vbmeta_system=$(BOARD_AVB_VBMETA_SYSTEM)" >> $@
  	$(hide) echo "avb_vbmeta_system_args=$(BOARD_AVB_MAKE_VBMETA_SYSTEM_IMAGE_ARGS)" >> $@
-@@ -5722,6 +5759,7 @@ endif
+@@ -5694,6 +5741,7 @@ endif
  
  # Depending on the various images guarantees that the underlying
  # directories are up-to-date.
@@ -99,15 +99,14 @@ index c19b0754af..fa1ff00329 100644
  $(BUILT_TARGET_FILES_PACKAGE): \
  	    $(INSTALLED_RADIOIMAGE_TARGET) \
  	    $(INSTALLED_RECOVERYIMAGE_TARGET) \
-@@ -5734,6 +5772,7 @@ $(BUILT_TARGET_FILES_PACKAGE): \
- 	    $(INSTALLED_RECOVERY_KERNEL_TARGET) \
+@@ -5705,5 +5742,6 @@ $(BUILT_TARGET_FILES_PACKAGE): \
  	    $(INSTALLED_KERNEL_TARGET) \
  	    $(INSTALLED_RAMDISK_TARGET) \
 +	    $(MTK_BOOTIMAGE_TARGET) \
  	    $(INSTALLED_DTBIMAGE_TARGET) \
  	    $(INSTALLED_2NDBOOTLOADER_TARGET) \
  	    $(BOARD_PREBUILT_DTBOIMAGE) \
-@@ -5759,6 +5798,45 @@ $(BUILT_TARGET_FILES_PACKAGE): \
+@@ -5730,6 +5788,45 @@ $(BUILT_TARGET_FILES_PACKAGE): \
  	    $(BUILT_KERNEL_CONFIGS_FILE) \
  	    $(BUILT_KERNEL_VERSION_FILE) \
  	    | $(ACP)
@@ -153,7 +152,7 @@ index c19b0754af..fa1ff00329 100644
  	@echo "Package target files: $@"
  	$(hide) rm -rf $@ $@.list $(zip_root)
  	$(hide) mkdir -p $(dir $@) $(zip_root)
-@@ -6176,6 +6254,11 @@ endif
+@@ -6150,6 +6228,11 @@ endif
  ifeq ($(BUILD_QEMU_IMAGES),true)
  	$(hide) AVBTOOL=$(AVBTOOL) $(MK_VBMETA_BOOT_KERNEL_CMDLINE_SH) $(zip_root)/IMAGES/vbmeta.img \
  	    $(zip_root)/IMAGES/system.img $(zip_root)/IMAGES/VerifiedBootParams.textproto
@@ -169,7 +168,7 @@ diff --git a/core/main.mk b/core/main.mk
 index 702791ebb7..1c20dd84a7 100644
 --- a/core/main.mk
 +++ b/core/main.mk
-@@ -1576,8 +1576,13 @@ systemotherimage: $(INSTALLED_SYSTEMOTHERIMAGE_TARGET)
+@@ -1578,8 +1578,13 @@ systemotherimage: $(INSTALLED_SYSTEMOTHERIMAGE_TARGET)
  .PHONY: superimage_empty
  superimage_empty: $(INSTALLED_SUPERIMAGE_EMPTY_TARGET)
  
@@ -183,7 +182,7 @@ index 702791ebb7..1c20dd84a7 100644
  
  .PHONY: initbootimage
  initbootimage: $(INSTALLED_INIT_BOOT_IMAGE_TARGET)
-@@ -1603,6 +1608,76 @@ vbmetavendorimage: $(INSTALLED_VBMETA_VENDORIMAGE_TARGET)
+@@ -1605,6 +1610,76 @@ vbmetavendorimage: $(INSTALLED_VBMETA_VENDORIMAGE_TARGET)
  
  # The droidcore-unbundled target depends on the subset of targets necessary to
  # perform a full system build (either unbundled or not).
@@ -260,7 +259,7 @@ index 702791ebb7..1c20dd84a7 100644
  .PHONY: droidcore-unbundled
  droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
      $(INSTALLED_FILES_OUTSIDE_IMAGES) \
-@@ -1671,6 +1746,7 @@ droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
+@@ -1673,6 +1748,7 @@ droidcore-unbundled: $(filter $(HOST_OUT_ROOT)/%,$(modules_to_install)) \
      $(INSTALLED_FILES_FILE_RECOVERY) \
      $(INSTALLED_FILES_JSON_RECOVERY) \
      $(INSTALLED_ANDROID_INFO_TXT_TARGET)
@@ -272,7 +271,7 @@ diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/
 index 09f69d0400..8c12e2a9b0 100644
 --- a/tools/releasetools/add_img_to_target_files.py
 +++ b/tools/releasetools/add_img_to_target_files.py
-@@ -508,6 +508,31 @@ def AddUserdata(output_zip):
+@@ -537,6 +537,31 @@ def AddUserdata(output_zip):
    # As it's likely huge and consist of lots of 0s.
    img.Write(zipfile.ZIP_DEFLATED)
  
@@ -304,7 +303,7 @@ index 09f69d0400..8c12e2a9b0 100644
  
  def AddVBMeta(output_zip, partitions, name, needed_partitions):
    """Creates a VBMeta image and stores it in output_zip.
-@@ -952,6 +977,10 @@ def AddImagesToTargetFiles(filename):
+@@ -980,6 +1005,10 @@ def AddImagesToTargetFiles(filename):
      banner("custom images for " + partition_name)
      partitions[partition_name] = AddCustomImages(output_zip, partition_name)
  
