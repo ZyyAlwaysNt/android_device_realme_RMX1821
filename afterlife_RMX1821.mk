@@ -17,6 +17,9 @@ $(call inherit-product, device/realme/RMX1821/device.mk)
 # AfterLife flags
 AFTERLIFE_MAINTAINER := IverzAsterix
 
+# Offline Charging
+USE_PIXEL_CHARGING := true
+
 # disable/enable blur support, default is false
 TARGET_SUPPORTS_BLUR := true
 
