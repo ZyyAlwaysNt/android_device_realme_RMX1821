@@ -14,6 +14,6 @@
 <resources>
    <string name="maintainer_git_username">asterixiverz</string>
     <string name="maintainer_tele_username">iverzasterix</string>
-    <string name="maintainer_ig_username">Not found</string>
-    <string name="maintainer_fb_username">Not found</string>
+    <string name="maintainer_ig_username">null</string>
+    <string name="maintainer_fb_username">null</string>
 </resources>
