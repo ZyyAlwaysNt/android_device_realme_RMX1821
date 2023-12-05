@@ -1,7 +1,7 @@
 From d414998cc2783d4c6ebfba1591831515aca2cc58 Mon Sep 17 00:00:00 2001
 From: Zinadin Zidan <zidan.roking@gmail.com>
 Date: Sun, 10 Oct 2021 17:00:44 +0000
-Subject: [PATCH 3/4] Wifi: Add ExternalCallbackTracker class
+Subject: [PATCH] Wifi: Add ExternalCallbackTracker class
 
 Signed-off-by: Sarthak Roy <sarthakroy2002@gmail.com>
 Change-Id: I4fe9d7e70d99ccfde1472fa24267e9ac726fc59a
