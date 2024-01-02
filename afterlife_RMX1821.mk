@@ -15,7 +15,7 @@ $(call inherit-product, vendor/afterlife/config/common_full_phone.mk)
 $(call inherit-product, device/realme/RMX1821/device.mk)
 
 # AfterLife flags
-AFTERLIFE_MAINTAINER := IverzAsterix
+AFTERLIFE_MAINTAINER := AzrielAlfrzii
 
 # Offline Charging
 USE_PIXEL_CHARGING := true
