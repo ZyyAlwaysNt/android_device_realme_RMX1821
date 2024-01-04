@@ -15,13 +15,13 @@ $(call inherit-product, vendor/afterlife/config/common_full_phone.mk)
 $(call inherit-product, device/realme/RMX1821/device.mk)
 
 # AfterLife flags
-AFTERLIFE_MAINTAINER := IverzAsterix
+AFTERLIFE_MAINTAINER := AzrllAlfrzii
 
 # Offline Charging
 USE_PIXEL_CHARGING := true
 
 # disable/enable blur support, default is false
-TARGET_SUPPORTS_BLUR := true
+TARGET_SUPPORTS_BLUR := false
 
 # Face Unlock
 TARGET_FACE_UNLOCK_SUPPORTED := true
