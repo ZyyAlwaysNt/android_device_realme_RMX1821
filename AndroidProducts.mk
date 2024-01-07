@@ -7,4 +7,4 @@
 DEVICE_PATH := device/realme/RMX1821
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/afterlife_RMX1821.mk
+    $(LOCAL_DIR)/arrow_RMX1821.mk
