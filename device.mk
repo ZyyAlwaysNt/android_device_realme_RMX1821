@@ -187,7 +187,8 @@ PRODUCT_PACKAGES += \
 	TelephonyOverlayRMX1821 \
 	TetheringConfigOverlayRMX1821 \
     WifiResOverlayRMX1821 \
-    SettingsOverlayRMX1821
+    SettingsOverlayRMX1821 \
+Overlay
 
 # Perf
 PRODUCT_COPY_FILES += \
